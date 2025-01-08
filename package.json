@@ -79,6 +79,7 @@
   "types": "grant.d.ts",
   "scripts": {
     "test": "npm run test:ci",
+    "test:node": "node --test test/handler/*.js test/flow/*.js test/*.js",
     "test:ci": "npx mocha --recursive",
     "test:cov": "npx nyc --reporter=lcov --reporter=text-summary mocha -- --recursive"
   },

@@ -1,4 +1,6 @@
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after} = require('node:test');
+
 var signature = require('cookie-signature')
 var session = require('../lib/session')
 

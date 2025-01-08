@@ -1,5 +1,7 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after, afterEach} = require('node:test');
+
 var qs = require('qs')
 
 var request = require('request-compose').extend({

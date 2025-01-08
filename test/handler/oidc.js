@@ -1,5 +1,6 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after} = require('node:test');
 
 var request = require('request-compose').extend({
   Request: {cookie: require('request-cookie').Request},

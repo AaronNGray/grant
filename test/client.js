@@ -1,5 +1,7 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after} = require('node:test');
+
 var http = require('http')
 var qs = require('qs')
 var compose = require('request-compose')

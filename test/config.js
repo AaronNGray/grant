@@ -1,5 +1,7 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after} = require('node:test');
+
 var config = require('../lib/config')
 
 

@@ -1,5 +1,7 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after, afterEach} = require('node:test');
+
 var qs = require('qs')
 
 var request = require('request-compose').extend({
@@ -45,8 +47,8 @@ describe('handler', () => {
     await oauth1.close()
   })
 
-  describe('handlers', () => {
-    ;['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
+  describe('handlers', (done) => {
+    ['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       Array.from({length: 5}).forEach((_, index) => {
         describe(`${handler} - ${index}`, () => {
           before(async () => {
@@ -71,6 +73,7 @@ describe('handler', () => {
         })
       })
     })
+    done()
   })
 
   describe('missing session middleware', () => {
@@ -294,7 +297,7 @@ describe('handler', () => {
     })
   })
 
-  describe('dynamic session', () => {
+  describe('dynamic session', (done) => {
     ;['express', 'koa', 'hapi', 'fastify', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       describe(handler, () => {
         before(async () => {
@@ -310,7 +313,7 @@ describe('handler', () => {
           provider.on.access = () => {}
         })
 
-        it('get', async () => {
+        it('get', () => {
           provider.on.authorize = ({query}) => {
             t.deepEqual(query, {
               client_id: 'very',
@@ -375,7 +378,7 @@ describe('handler', () => {
     })
   })
 
-  describe('dynamic state', () => {
+  describe('dynamic state', (done) => {
     ;['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       describe(handler, () => {
         before(async () => {
@@ -391,7 +394,7 @@ describe('handler', () => {
           provider.on.access = () => {}
         })
 
-        it('success', async () => {
+        it('success', async (done) => {
           provider.on.authorize = ({query}) => {
             t.deepEqual(query, {
               client_id: 'very',
@@ -418,15 +421,16 @@ describe('handler', () => {
             raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
           })
           t.deepEqual(session, {provider: 'oauth2'})
+          done()
         })
       })
     })
   })
 
-  describe('transport querystring session', () => {
+  describe('transport querystring session', (done) => {
     ;['express', 'koa', 'hapi', 'fastify', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       ;['', 'querystring', 'session'].forEach((transport) => {
-        describe(`${handler} - transport ${transport}`, () => {
+        describe(`${handler} - transport ${transport}`, (done) => {
           before(async () => {
             client = await Client({test: 'handlers', handler, config})
           })
@@ -435,7 +439,7 @@ describe('handler', () => {
             await client.close()
           })
 
-          it('success', async () => {
+          it('success', async (done) => {
             var {body: {response, session, state}} = await request({
               url: client.url('/connect/oauth2'),
               qs: {transport},
@@ -456,15 +460,18 @@ describe('handler', () => {
                 raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
               }})
             }
+            done()
           })
         })
+        done()
       })
     })
+    done()
   })
 
-  describe('transport state', () => {
+  describe('transport state', (done) => {
     ;['express', 'koa', 'koa-before', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
-      describe(handler, () => {
+      describe(handler, (done) => {
         before(async () => {
           client = await Client({test: 'transport-state', handler, config: {
             defaults: {...config.defaults, transport: 'state'},
@@ -476,7 +483,7 @@ describe('handler', () => {
           await client.close()
         })
 
-        it('success', async () => {
+        it('success', async (done) => {
           var {body: {response, session, state}} = await request({
             url: client.url('/connect/oauth2'),
             cookie: {},
@@ -494,9 +501,12 @@ describe('handler', () => {
               raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
             }
           })
+          done()
         })
+        done()
       })
     })
+    done()
   })
 
   describe('response filter', () => {
@@ -771,7 +781,7 @@ describe('handler', () => {
 
         afterEach(() => calls = [])
 
-        it('oauth2', async () => {
+        it('oauth2', () => {
           var {body: {response}} = await request({
             url: client.url('/connect/oauth2'),
             qs: {response: ['tokens', 'raw', 'profile']},
@@ -793,7 +803,7 @@ describe('handler', () => {
           t.ok(/^simov\/grant/.test(headers['user-agent']))
         })
 
-        it('oauth1', async () => {
+        it('oauth1', () => {
           var {body: {response}} = await request({
             url: client.url('/connect/oauth1'),
             qs: {response: ['tokens', 'raw', 'profile']},

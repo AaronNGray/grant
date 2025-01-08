@@ -1,5 +1,6 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it} = require('node:test');
 
 
 describe('handler', () => {

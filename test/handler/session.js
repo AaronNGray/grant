@@ -1,5 +1,7 @@
 
-var t = require('assert')
+var t = require('node:assert').strict;
+var {describe, it, before, after, afterEach} = require('node:test');
+
 var qs = require('qs')
 
 var request = require('request-compose').extend({
@@ -11,7 +13,7 @@ var Provider = require('../util/provider'), provider, oauth1
 var Client = require('../util/client'), client
 
 
-describe('session', () => {
+describe('session', (done) => {
   var config
 
   before(async () => {
@@ -42,7 +44,7 @@ describe('session', () => {
   })
 
   ;['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
-    describe(handler, () => {
+    describe(handler, (done) => {
       before(async () => {
         client = await Client({test: 'handlers', handler, config})
       })
@@ -211,5 +213,4 @@ describe('session', () => {
       })
     })
   })
-
 })
