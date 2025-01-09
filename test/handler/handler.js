@@ -312,7 +312,7 @@ describe('handler', () => {
           provider.on.access = () => {}
         })
 
-        it('get', () => {
+        it('get', async () => {
           provider.on.authorize = ({query}) => {
             t.deepEqual(query, {
               client_id: 'very',
