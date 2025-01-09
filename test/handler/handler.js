@@ -1,6 +1,6 @@
 
 var t = require('node:assert');
-var {describe, it, before, after, afterEach} = require('node:test');
+var {test, describe, it, before, after, afterEach} = require('node:test');
 
 var qs = require('qs')
 
@@ -14,7 +14,7 @@ var Provider = require('../util/provider'), provider, oauth1
 var Client = require('../util/client'), client
 
 
-describe('handler', () => {
+describe('handler', async () => {
   var config
 
   before(async () => {
@@ -47,10 +47,10 @@ describe('handler', () => {
     await oauth1.close()
   })
 
-  describe('handlers', () => {
+  describe('handlers', (context) => {
     ['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       Array.from({length: 5}).forEach((_, index) => {
-        describe(`${handler} - ${index}`, () => {
+        describe(`${handler} - ${index}`, (context) => {
           before(async () => {
             client = await Client({test: 'handlers', handler, config, index})
           })
@@ -296,7 +296,7 @@ describe('handler', () => {
     })
   })
 
-  describe('dynamic session', (done) => {
+  describe('dynamic session', () => {
     ;['express', 'koa', 'hapi', 'fastify', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       describe(handler, () => {
         before(async () => {
@@ -377,7 +377,7 @@ describe('handler', () => {
     })
   })
 
-  describe('dynamic state', (done) => {
+  describe('dynamic state', () => {
     ;['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       describe(handler, () => {
         before(async () => {
@@ -393,7 +393,7 @@ describe('handler', () => {
           provider.on.access = () => {}
         })
 
-        it('success', async (done) => {
+        it('success', async () => {
           provider.on.authorize = ({query}) => {
             t.deepEqual(query, {
               client_id: 'very',
@@ -420,16 +420,15 @@ describe('handler', () => {
             raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
           })
           t.deepEqual(session, {provider: 'oauth2'})
-          done()
         })
       })
     })
   })
 
-  describe('transport querystring session', (done) => {
+  describe('transport querystring session', () => {
     ;['express', 'koa', 'hapi', 'fastify', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       ;['', 'querystring', 'session'].forEach((transport) => {
-        describe(`${handler} - transport ${transport}`, (done) => {
+        describe(`${handler} - transport ${transport}`, () => {
           before(async () => {
             client = await Client({test: 'handlers', handler, config})
           })
@@ -438,7 +437,7 @@ describe('handler', () => {
             await client.close()
           })
 
-          it('success', async (done) => {
+          it('success', async () => {
             var {body: {response, session, state}} = await request({
               url: client.url('/connect/oauth2'),
               qs: {transport},
@@ -459,18 +458,15 @@ describe('handler', () => {
                 raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
               }})
             }
-            done()
           })
         })
-        done()
       })
     })
-    done()
   })
 
-  describe('transport state', (done) => {
+  describe('transport state', () => {
     ;['express', 'koa', 'koa-before', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
-      describe(handler, (done) => {
+      describe(handler, () => {
         before(async () => {
           client = await Client({test: 'transport-state', handler, config: {
             defaults: {...config.defaults, transport: 'state'},
@@ -482,7 +478,7 @@ describe('handler', () => {
           await client.close()
         })
 
-        it('success', async (done) => {
+        it('success', async () => {
           var {body: {response, session, state}} = await request({
             url: client.url('/connect/oauth2'),
             cookie: {},
@@ -500,12 +496,9 @@ describe('handler', () => {
               raw: {access_token: 'token', refresh_token: 'refresh', expires_in: '3600'}
             }
           })
-          done()
         })
-        done()
       })
     })
-    done()
   })
 
   describe('response filter', () => {
