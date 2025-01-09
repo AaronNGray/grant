@@ -1,5 +1,5 @@
 
-var t = require('node:assert').strict;
+var t = require('node:assert');
 var {describe, it, before, after, afterEach} = require('node:test');
 
 var qs = require('qs')

@@ -1,5 +1,5 @@
 
-var t = require('node:assert').strict;
+var t = require('node:assert');
 var {describe, it, before, after, afterEach} = require('node:test');
 
 var qs = require('qs')
@@ -47,7 +47,7 @@ describe('handler', () => {
     await oauth1.close()
   })
 
-  describe('handlers', (done) => {
+  describe('handlers', () => {
     ['express', 'koa', 'hapi', 'fastify', 'curveball', 'node', 'aws', 'azure', 'gcloud', 'vercel'].forEach((handler) => {
       Array.from({length: 5}).forEach((_, index) => {
         describe(`${handler} - ${index}`, () => {
@@ -73,7 +73,6 @@ describe('handler', () => {
         })
       })
     })
-    done()
   })
 
   describe('missing session middleware', () => {
@@ -781,7 +780,7 @@ describe('handler', () => {
 
         afterEach(() => calls = [])
 
-        it('oauth2', () => {
+        it('oauth2', async () => {
           var {body: {response}} = await request({
             url: client.url('/connect/oauth2'),
             qs: {response: ['tokens', 'raw', 'profile']},
@@ -803,7 +802,7 @@ describe('handler', () => {
           t.ok(/^simov\/grant/.test(headers['user-agent']))
         })
 
-        it('oauth1', () => {
+        it('oauth1', async () => {
           var {body: {response}} = await request({
             url: client.url('/connect/oauth1'),
             qs: {response: ['tokens', 'raw', 'profile']},
